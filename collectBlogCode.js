@@ -3,29 +3,20 @@ const path = require('path');
 const readline = require('readline');
 const stream = require('stream');
 
-// for testing
-const CHPL_REPO_OWNER = "jeremiah-corrado";
-
-// // for realz
-// const CHPL_REPO_OWNER = "chapel-lang";
-
-
-async function* fetchChplFilesFromRepo(subdir, branch = 'main') {
-    console.log(subdir);
-
+async function* fetchChplFilesFromRepo(subdir = '', owner = 'chapel-lang', branch = 'main') {
     // collect directory contents from the Repo
     const response = await fetch(
-        `https://api.github.com/repos/${CHPL_REPO_OWNER}/chapel/contents/test/blog-src${subdir}?` + new URLSearchParams({
+        `https://api.github.com/repos/${owner}/chapel/contents/test/blog-src${subdir}?` + new URLSearchParams({
             ref: branch
         }),
         { method: 'GET' }
-    );
+    ).catch(err => console.log("Unable to fetch files: ", err));
     const dir_contents = await response.json();
 
     // recurse on directories
     for (let i = 0; i < dir_contents.length; i++) {
         if (dir_contents[i].type == 'dir') {
-            yield * fetchChplFilesFromRepo(`${subdir}/${dir_contents[i].name}`, branch);
+            yield * fetchChplFilesFromRepo(`${subdir}/${dir_contents[i].name}`, owner, branch);
         }
     }
 
@@ -54,8 +45,10 @@ function makeOutputDir(fileName, subDir) {
     return dir_name;
 }
 
-async function writeFileChunks(branch) {
-    for await (const [file_name, ext, subdir, fileDownloadResponse] of fetchChplFilesFromRepo('', branch)) {
+async function writeFileChunks(startingSubDir = '', owner = 'chapel-lang', branch = 'main') {
+    console.log(`Collecting '.chpl' and '.good' files from "github.com/${owner}/chapel${(branch == 'main' ? '/' : '/tree/' + branch + '/')}test/blog-src/${startingSubDir}" ...`);
+
+    for await (const [file_name, ext, subdir, fileDownloadResponse] of fetchChplFilesFromRepo(startingSubDir, owner, branch)) {
         // setup output directory
         const dir_name = makeOutputDir(file_name, subdir);
 
@@ -89,7 +82,13 @@ async function writeFileChunks(branch) {
                 full_file_writer.write(line + '\n');
             }
         }
+        console.log(`Collected: ${subdir}/${file_name}`,);
     }
 }
 
-writeFileChunks('blog_src_test').catch(err => console.log(err));
+const args = process.argv.slice(2);
+const subdir = args[args.indexOf("--subdir") == -1 ? -1 : args.indexOf("--subdir") + 1];
+const owner = args[args.indexOf("--owner") == -1 ? -1 : args.indexOf("--owner") + 1];
+const branch = args[args.indexOf("--branch") == -1 ? -1 : args.indexOf("--branch") + 1];
+
+writeFileChunks(subdir, owner, branch).catch(err => console.log(err));
