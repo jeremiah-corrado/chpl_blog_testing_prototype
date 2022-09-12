@@ -2,3 +2,5 @@ baseURL = 'http://example.org/'
 languageCode = 'en-us'
 title = 'My New Hugo Site'
 theme = "ananke"
+custom_css = ["css/flickity.css"]
+custom_js = ["js/flickity.pkgd.min.js"]

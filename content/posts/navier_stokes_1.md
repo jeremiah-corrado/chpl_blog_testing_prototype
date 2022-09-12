@@ -55,3 +55,10 @@ Produces output (last section of the relevant .good file):
 ---
 
 Blah blah blah
+
+
+#### Testing .good Carousel:
+
+```
+{{< carousel >}}
+```
