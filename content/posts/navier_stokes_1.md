@@ -12,22 +12,18 @@ Link to related Python blog's [Notebook](https://nbviewer.org/github/barbagroup/
 
 and so on...
 
-### Constants and Writing to the Console
+### Constants and Basic IO
 ---
 
 Some info about `config const` and `writeln`...
 
 Example code:
+{{< chplChunk chunk="0" subdir="/step_1" >}}
 
-{{< highlight chapel >}}
-    {{% include "/static/navier_stokes_1/step_1/chunk_0.chpl" %}}
-{{< / highlight >}}
 
 Produces output:
+{{% goodChunk chunk="0" subdir="/step_1" %}}
 
-```
-{{% include "/static/navier_stokes_1/step_1/chunk_0.good" %}}
-```
 
 ### Arrays
 ---
@@ -35,16 +31,10 @@ Produces output:
 Some info about `Array`s...
 
 Next section of example code:
-
-{{< highlight chapel >}}
-    {{% include "/static/navier_stokes_1/step_1/chunk_1.chpl" %}}
-{{< / highlight >}}
+{{< chplChunk chunk="1" subdir="/step_1" >}}
 
 Produces output (next section of the relevant .good file):
-
-```
-{{% include "/static/navier_stokes_1/step_1/chunk_1.good" %}}
-```
+{{% goodChunk chunk="1" subdir="/step_1" %}}
 
 Further explanation...
 
@@ -55,16 +45,10 @@ Further explanation...
 Some info about loops...
 
 Final section of example code:
-
-{{< highlight chapel >}}
-    {{% include "/static/navier_stokes_1/step_1/chunk_2.chpl" %}}
-{{< / highlight >}}
+{{< chplChunk chunk="2" subdir="/step_1" >}}
 
 Produces output (last section of the relevant .good file):
-
-```
-{{% include "/static/navier_stokes_1/step_1/chunk_2.good" %}}
-```
+{{% goodChunk chunk="2" subdir="/step_1" %}}
 
 
 ### Conclusion

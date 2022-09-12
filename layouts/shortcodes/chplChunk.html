@@ -1,0 +1,5 @@
+{{ $pageName := path.Base .Page.RelPermalink}}
+{{ $subDir := .Get "subdir" | default "/"}}
+{{ $chunkIdx := .Get "chunk" | default -1 }}
+{{ $fileName := cond (eq $chunkIdx -1) ("full.chpl") (print "Chunk_" $chunkIdx ".chpl") }}
+{{ highlight ( path.Join "./static/" $pageName $subDir $fileName  | readFile | safeHTML ) "chapel" }}
