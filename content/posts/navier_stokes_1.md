@@ -24,6 +24,12 @@ Example code:
 Produces output:
 {{% goodChunk chunk="0" subdir="/step_1" %}}
 
+{{< goodMenu name="list_1" >}}
+    {{< goodOption chunk="0" subdir="/step_1" >}}
+    {{< goodOption chunk="1" subdir="/step_1" opts="gasnet" >}}
+    {{< goodOption chunk="2" subdir="/step_1" opts="gmp" >}}
+{{< /goodMenu >}}
+
 
 ### Arrays
 ---

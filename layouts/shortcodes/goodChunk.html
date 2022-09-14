@@ -1,7 +1,7 @@
-{{ $pageName := path.Base .Page.RelPermalink}}
-{{ $subDir := .Get "subdir" | default "/"}}
+{{ $pageName := path.Base .Page.RelPermalink }}
+{{ $subDir := .Get "subdir" | default "/" }}
 {{ $chunkIdx := .Get "chunk" | default -1 }}
 {{ $fileName := cond (eq $chunkIdx -1) ("full.good") (print "Chunk_" $chunkIdx ".good") }}
 ```
-{{ ( path.Join "./static/" $pageName $subDir $fileName  | readFile | safeHTML ) }}
+{{ path.Join "./static/" $pageName $subDir $fileName  | readFile | safeHTML }}
 ```
