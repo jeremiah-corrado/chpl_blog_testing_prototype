@@ -1,12 +1,12 @@
+<!-- see js/dropdownMenus.js -->
 {{ $pageName := path.Base .Page.RelPermalink}}
-{{ $subDir := .Get "subdir" | default "/"}}
+{{ $subDir := .Get "file" | default ""}}
 {{ $chunkIdx := .Get "chunk" | default -1 }}
-{{ $fileName := cond (eq $chunkIdx -1) ("full.good") (print "Chunk_" $chunkIdx ".good") }}
-{{ $optsId := .Get "opts" | default "standard" }}
+{{ $cnfgTags := .Get "cnfg" | default -1 }}
+{{ $fileName := cond (eq $chunkIdx -1) ( cond (eq $cnfgTags -1) ("full.good") (print "full." $cnfgTags ".good") ) ( cond (eq $cnfgTags -1) (print "Chunk_" $chunkIdx ".good") (print "Chunk_" $chunkIdx "." $cnfgTags ".good") )}}
+{{ $txtVal := .Get "txt" }}
 {{ with .Parent }}
-<div class={{ print "opt_" (.Get "name") }} id={{ print (.Get "name") "_" $optsId }} style="display: none">
-    <code>
-        {{ path.Join "./static/" $pageName $subDir $fileName  | readFile | safeHTML }}
-    </code>
+<div class={{ print "opt_" ( .Get "name" ) }} id={{ print ( .Get "name" ) "_" $txtVal }} style="display: none">
+    {{ highlight ( path.Join "./static/blog-src/" $pageName "/" $subDir "/" $fileName  | readFile | safeHTML ) "text" }}
 </div>
 {{ end }}

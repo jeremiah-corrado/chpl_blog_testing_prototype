@@ -1,7 +1,6 @@
 {{ $pageName := path.Base .Page.RelPermalink }}
-{{ $subDir := .Get "subdir" | default "/" }}
+{{ $subDir := .Get "file" | default "" }}
 {{ $chunkIdx := .Get "chunk" | default -1 }}
-{{ $fileName := cond (eq $chunkIdx -1) ("full.good") (print "Chunk_" $chunkIdx ".good") }}
-```
-{{ path.Join "./static/" $pageName $subDir $fileName  | readFile | safeHTML }}
-```
+{{ $cnfgTags := .Get "cnfg" | default -1 }}
+{{ $fileName := cond (eq $chunkIdx -1) ( cond (eq $cnfgTags -1) ("full.good") (print "full." $cnfgTags ".good") ) ( cond (eq $cnfgTags -1) (print "Chunk_" $chunkIdx ".good") (print "Chunk_" $chunkIdx "." $cnfgTags ".good") )}}
+{{ highlight (path.Join "./static/blog-src/" $pageName "/" $subDir "/" $fileName  | readFile | safeHTML) "text" }}

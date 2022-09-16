@@ -1,2 +1,2 @@
-node collectBlogCode.js --owner $1 --branch $2
+node collectBlogCode.js --owner jeremiah-corrado --branch blog_src_test
 hugo server -D --forceSyncStatic

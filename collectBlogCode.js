@@ -21,36 +21,38 @@ async function* fetchChplFilesFromRepo(subdir = '', owner = 'chapel-lang', branc
     }
 
     // select files to download
-    const to_download = dir_contents.map(obj => {
-        const ext = path.parse(obj.name).ext;
-        return [obj, ext.substring(1)];
-    }).filter(([_, ext]) => {
-        return ext == 'chpl' || ext == 'good';
-    });
+    if (Array.isArray(dir_contents)) {
+        const to_download = dir_contents.filter(obj => {
+            const ext = path.parse(obj.name).ext;
+            return ext == '.chpl' || ext == '.good';
+        });
 
-    // asynchronously yield [full filename, extension, path, download-response]
-    for (let i = 0; i < to_download.length; i++) {
-        yield [
-            to_download[i][0].name,
-            to_download[i][1],
-            subdir,
-            fetch(to_download[i][0].download_url)
-        ];
+        // asynchronously yield [filename, path, download-response]
+        for (let i = 0; i < to_download.length; i++) {
+            yield [
+                to_download[i].name,
+                subdir,
+                fetch(to_download[i].download_url)
+            ];
+        }
+    } else {
+        console.log(`Sub-directory empty: ${subdir}`);
     }
 }
 
 function makeOutputDir(fileName, subDir) {
-    const dir_name = `./static/${subDir}/${path.parse(fileName).name}`;
+    const fn_chunks = fileName.split('.');
+    const dir_name = `./static/blog-src/${subDir}/${fn_chunks.splice(0, 1)[0]}`;
     if (!fs.existsSync(dir_name)) { fs.mkdirSync(dir_name, { recursive: true }); }
-    return dir_name;
+    return [dir_name, fn_chunks.join('.')];
 }
 
 async function writeFileChunks(startingSubDir = '', owner = 'chapel-lang', branch = 'main') {
     console.log(`Collecting '.chpl' and '.good' files from "github.com/${owner}/chapel${(branch == 'main' ? '/' : '/tree/' + branch + '/')}test/blog-src/${startingSubDir}" ...`);
 
-    for await (const [file_name, ext, subdir, fileDownloadResponse] of fetchChplFilesFromRepo(startingSubDir, owner, branch)) {
+    for await (const [file_name, subdir, fileDownloadResponse] of fetchChplFilesFromRepo(startingSubDir, owner, branch)) {
         // setup output directory
-        const dir_name = makeOutputDir(file_name, subdir);
+        const [dir_name, extension] = makeOutputDir(file_name, subdir);
 
         // setup a line-by-line readable stream from the download-read-stream
         const fileReadLines = readline.createInterface({
@@ -63,7 +65,7 @@ async function writeFileChunks(startingSubDir = '', owner = 'chapel-lang', branc
         let chunk_file_writer = fs.createWriteStream('/dev/null');
 
         // setup a write stream for the full file
-        const full_file_writer = fs.createWriteStream(`${dir_name}/full.${ext}`);
+        const full_file_writer = fs.createWriteStream(`${dir_name}/full.${extension}`);
 
         // read lines and write to file output streams
         //  go to the next file/chunk on lines containing '__BREAK__'
@@ -71,9 +73,9 @@ async function writeFileChunks(startingSubDir = '', owner = 'chapel-lang', branc
             if (line.includes('__BREAK__') || chunkIndex == -1) {
                 chunk_file_writer.close();
                 chunkIndex += 1;
-                chunk_file_writer = fs.createWriteStream(`${dir_name}/chunk_${chunkIndex}.${ext}`);
+                chunk_file_writer = fs.createWriteStream(`${dir_name}/chunk_${chunkIndex}.${extension}`);
 
-                if (chunkIndex == 0) {
+                if (chunkIndex == 0 && !line.includes('__BREAK__')) {
                     chunk_file_writer.write(line + '\n');
                     full_file_writer.write(line + '\n');
                 }
@@ -82,7 +84,7 @@ async function writeFileChunks(startingSubDir = '', owner = 'chapel-lang', branc
                 full_file_writer.write(line + '\n');
             }
         }
-        console.log(`Collected: ${subdir}/${file_name}`,);
+        console.log(`Collected: ${subdir}/${file_name}`);
     }
 }
 

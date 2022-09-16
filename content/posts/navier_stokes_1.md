@@ -12,23 +12,19 @@ Link to related Python blog's [Notebook](https://nbviewer.org/github/barbagroup/
 
 and so on...
 
+## Tutorial Step 1...
+
 ### Constants and Basic IO
 ---
 
 Some info about `config const` and `writeln`...
 
 Example code:
-{{< chplChunk chunk="0" subdir="/step_1" >}}
+{{< chplChunk file="step_1" chunk="0" >}}
 
 
 Produces output:
-{{% goodChunk chunk="0" subdir="/step_1" %}}
-
-{{< goodMenu name="list_1" >}}
-    {{< goodOption chunk="0" subdir="/step_1" >}}
-    {{< goodOption chunk="1" subdir="/step_1" opts="gasnet" >}}
-    {{< goodOption chunk="2" subdir="/step_1" opts="gmp" >}}
-{{< /goodMenu >}}
+{{< goodChunk file="step_1" chunk="0" >}}
 
 
 ### Arrays
@@ -37,10 +33,10 @@ Produces output:
 Some info about `Array`s...
 
 Next section of example code:
-{{< chplChunk chunk="1" subdir="/step_1" >}}
+{{< chplChunk chunk="1" file="step_1" >}}
 
 Produces output (next section of the relevant .good file):
-{{% goodChunk chunk="1" subdir="/step_1" %}}
+{{< goodChunk chunk="1" file="step_1" >}}
 
 Further explanation...
 
@@ -51,13 +47,22 @@ Further explanation...
 Some info about loops...
 
 Final section of example code:
-{{< chplChunk chunk="2" subdir="/step_1" >}}
+{{< chplChunk chunk="2" file="step_1" >}}
 
 Produces output (last section of the relevant .good file):
-{{% goodChunk chunk="2" subdir="/step_1" %}}
+{{< goodChunk chunk="2" file="step_1" >}}
 
 
-### Conclusion
+## Moving onto step 2...
+
+Full Example code:
+{{< chplChunk file="step_2" >}}
+
+
+Produces output:
+{{< goodChunk file="step_2" >}}
+
+# Conclusion
 ---
 
 Blah blah blah
